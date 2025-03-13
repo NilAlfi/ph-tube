@@ -34,8 +34,8 @@ dataCategories()
 
 //Videos Section Code Start
 
-const videosFetch = () =>{
-    fetch('https://openapi.programming-hero.com/api/phero-tube/videos')
+const videosFetch = (searchText = "") =>{
+    fetch(`https://openapi.programming-hero.com/api/phero-tube/videos?title=${searchText}`)
     .then(response => response.json())
     .then(data => {
         removeActiveClass()
@@ -159,3 +159,12 @@ const videoDisplayDetails = (phVideo) =>{
   `;
 }
 // Load Video Details Code End
+
+
+// Search Input Code Start
+document.getElementById("search_input")
+  .addEventListener("keyup", (e) => {
+    const inputShow = e.target.value;
+    videosFetch(inputShow)
+  })
+// Search Input Code End
