@@ -1,31 +1,3 @@
-// function loadCategories (){
-//     fetch('https://openapi.programming-hero.com/api/phero-tube/categories')
-//     .then((res) => res.json())
-//     .then((data) => displayCategories(data.categories))
-// };
-
-
-// function displayCategories (categories){
-
-//     const categoriesContainer = document.getElementById("category-container");
-
-//     for(let cat of categories){
-//         console.log(cat);
-//         const categoryDiv = document.createElement("div");
-//         categoryDiv.innerHTML = `
-//                 <button class="btn btn-sm hover:bg-[#ff1f3d] hover:text-white">${cat.category}</button>
-//         `;
-
-//         categoriesContainer.appendChild(categoryDiv);
-//     }
-// };
-
-
-// loadCategories();
-
-
-
-
 // Button Section Code Start
 function dataCategories (){
     fetch("https://openapi.programming-hero.com/api/phero-tube/categories")
@@ -46,9 +18,9 @@ function callCategories (goru){
         const createDiv = document.createElement("div");
         createDiv.innerHTML = `
         
-            <button class="btn btn-sm hover:bg-[#ff1f3d] hover:text-white">${elementI.category}</button>
+            <button onclick="loadCategory(${elementI.category_id})" class="btn btn-sm hover:bg-[#ff1f3d] hover:text-white">${elementI.category}</button>
         
-        `;
+        `;+
 
         categoryContainer.appendChild(createDiv);
     }
@@ -57,7 +29,7 @@ function callCategories (goru){
 
 dataCategories()
 
-// Button Section Code Start
+// Button Section Code End
 
 //Videos Section Code Start
 
@@ -71,6 +43,18 @@ const videosFetch = () =>{
 
 const displayVideos = (thumb) =>{
     const videoContainer = document.getElementById("videocontainer")
+    videoContainer.innerHTML = "";
+    if(thumb.length == 0){
+      videoContainer.innerHTML = `
+      
+      <div class="col-span-full flex justify-center flex-col items-center py-20">
+            <img class="w-[120px]" src="images/Icon.png" alt="">
+            <h2 class="text-3xl font-bold text-center mt-3">Opps!! There is No Content Here</h2>
+        </div>
+      
+      `;
+      return;
+    }
     console.log(thumb);
     thumb.forEach((thumbs) =>{
         const createVideoDiv = document.createElement("div");
@@ -106,8 +90,16 @@ const displayVideos = (thumb) =>{
     
 }
 
-videosFetch()
-
 //Videos Section Code End
 
-
+// Category Music/ Comedy/ Drawing Code Start
+   const loadCategory = (id) =>{
+    console.log(id);
+    const url = `https://openapi.programming-hero.com/api/phero-tube/category/${id}`
+    fetch(url)
+    .then(res => res.json())
+    .then(data => {
+      displayVideos(data.category)
+    })
+   }
+// Category Music/ Comedy/ Drawing Code End
