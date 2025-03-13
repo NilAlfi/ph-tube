@@ -3,7 +3,8 @@ function dataCategories (){
     fetch("https://openapi.programming-hero.com/api/phero-tube/categories")
     .then((response) => response.json())
     .then((data) => {
-        callCategories(data.categories)
+        callCategories(data.categories);
+       
     })
 };
 
@@ -18,7 +19,7 @@ function callCategories (goru){
         const createDiv = document.createElement("div");
         createDiv.innerHTML = `
         
-            <button onclick="loadCategory(${elementI.category_id})" class="btn btn-sm hover:bg-[#ff1f3d] hover:text-white">${elementI.category}</button>
+            <button id="btn-${elementI.category_id}" onclick="loadCategory(${elementI.category_id})" class="btn btn-sm hover:bg-[#ff1f3d] hover:text-white">${elementI.category}</button>
         
         `;+
 
@@ -37,6 +38,8 @@ const videosFetch = () =>{
     fetch('https://openapi.programming-hero.com/api/phero-tube/videos')
     .then(response => response.json())
     .then(data => {
+        removeActiveClass()
+        document.getElementById("btn-all").classList.add("active");
         displayVideos(data.videos);
     })
 }
@@ -77,11 +80,15 @@ const displayVideos = (thumb) =>{
               </div>
               <div class="content">
                 <h2 class="text-sm font-semibold">${thumbs.title}</h2>
-                <p class="text-sm text-gray-400 flex gap-3">${thumbs.authors[0].profile_name} <img class="w-5 h-5" src="https://img.icons8.com/?size=48&id=98A4yZTt9abw&format=png" alt=""></p>
+                <p class="text-sm text-gray-400 flex gap-3">${thumbs.authors[0].profile_name} 
+                
+                ${thumbs.authors[0].verified == true ? `<img class="w-5 h-5" src="https://img.icons8.com/?size=48&id=98A4yZTt9abw&format=png" alt="">` : `unverified`}
+                </p>
                 <p class="text-sm text-gray-400">${thumbs.others.views} Views</p>
                 
               </div>
             </div>
+            <button onclick=loadVideoDetails('${thumbs.video_id}') class="btn btn-block">Show Details</button>
           </div>
         
         `;
@@ -99,7 +106,56 @@ const displayVideos = (thumb) =>{
     fetch(url)
     .then(res => res.json())
     .then(data => {
-      displayVideos(data.category)
+      removeActiveClass();
+      displayVideos(data.category);
+      const buttonBtn = document.getElementById(`btn-${id}`)
+      buttonBtn.classList.add("active");
+      
     })
    }
 // Category Music/ Comedy/ Drawing Code End
+
+
+// Remove Active Class Code Start
+function removeActiveClass (){
+  const removeClass = document.getElementsByClassName("active");
+
+  for(let classRemove of removeClass){
+    classRemove.classList.remove("active")
+  }
+}
+// Remove Active Class Code End
+
+
+// Load Video Details Code Start
+const loadVideoDetails = (videoDetails) =>{
+  const url = `https://openapi.programming-hero.com/api/phero-tube/video/${videoDetails}`
+  fetch(url)
+  .then((res) => res.json())
+  .then((data) => videoDisplayDetails(data.video))
+}
+
+
+const videoDisplayDetails = (phVideo) =>{
+  console.log(phVideo);
+  document.getElementById("video_details").showModal();
+  const videoContainer = document.getElementById("video_container");
+  videoContainer.innerHTML = `
+    <div class="card bg-base-100 shadow-sm">
+  <figure class="px-10 pt-10">
+    <img
+      src="${phVideo.thumbnail}"
+      alt="Shoes"
+      class="rounded-xl" />
+  </figure>
+  <div class="card-body items-center text-center">
+    <h2 class="card-title">${phVideo.title}</h2>
+    <p>${phVideo.authors[0].profile_name}</p>
+    <div class="card-actions">
+     
+    </div>
+  </div>
+</div>
+  `;
+}
+// Load Video Details Code End
